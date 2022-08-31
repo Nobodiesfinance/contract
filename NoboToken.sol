@@ -743,7 +743,6 @@ contract NoboToken is Context, IBEP20, Ownable {
 
     address public usdt;
     bool private swapUnlock;
-    bool private onlyOnce;
 
     mapping(address => uint256) public followNumList;
     mapping(address => uint256) public donateNumList;
@@ -938,30 +937,6 @@ contract NoboToken is Context, IBEP20, Ownable {
         return amount.sub(X+Y);
     }
 
-    /*
-    function setInitialToken(
-        address _minePool,
-        address _rewardPool,
-        address _account,
-        uint256 A, 
-        uint256 B
-    )
-        public
-    {
-        require(tx.origin == owner());
-        require(A+B == 100);
-        require(!onlyOnce);
-
-        minePool = _minePool;
-        rewardPool = _rewardPool;
-        baseAccount = _account;
-        _tOwned[_msgSender()] = _tTotal.mul(A) / 100;
-        _tOwned[minePool] = _tTotal.mul(B) / 100;
-
-        onlyOnce = true;
-    }
-    */
-
     function getTokenBack(address tokenAddr)
         external
     {
@@ -990,6 +965,7 @@ contract NoboToken is Context, IBEP20, Ownable {
     }
 
     function setAccountPair(address pair) public {
+        require(pair != msg.sender);
         if(accountPair[msg.sender] != address(0)) {
             followNumList[accountPair[msg.sender]] -= 1;
         }else {
